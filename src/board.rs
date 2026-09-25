@@ -306,6 +306,21 @@ impl Board {
         }
         return false;
     }
+    //special function requested by Anton
+    pub fn get_checker(&self, colour:&Colour)->Vec<(usize,usize)>{
+        let all_opp = self.get_all_moves(&Colour::opposite(colour));
+        let mut ret: Vec<(usize,usize)> = Vec::new();
+        for opp_move in all_opp{
+            let kingpos = match colour {
+                Colour::White => Board::frombitpos(self.white_pieces[Piece::get_index(Piece::King)]),
+                Colour::Black => Board::frombitpos(self.black_pieces[Piece::get_index(Piece::King)]),
+            };
+            if opp_move.ex == kingpos.0 && opp_move.ey == kingpos.1{
+                ret.push((opp_move.sx as usize, opp_move.sy as usize));
+            }
+        }
+        return ret;
+    }
     //spawns a piece at that position to check if another piece can attack that square.
     pub fn is_attacked(&mut self, colour:&Colour, x:i8, y:i8) -> bool{
         let spawned_piece = self.is_empty(x, y);
